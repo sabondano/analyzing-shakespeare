@@ -6,17 +6,20 @@ class MacbethAnalyzer
 
   attr_reader :macbeth_hash
 
-  def count_lines_by_speaker(play)
+  def count_lines_in_play(play)
+    play["ACT"].inject(Hash.new(0)) do |counter, act|
+      count_lines_in_act(act, counter)
+    end
   end
 
-  def count_lines_in_act(act)
-    act.inject(Hash.new(0)) do |counter, scene|
+  def count_lines_in_act(act, counter = Hash.new(0) )
+    act.inject(counter) do |counter, scene|
       count_lines_in_scene(scene["SCENE"], counter)
     end
   end
 
   def count_lines_in_scene(scene, counter = Hash.new(0) )
-    scene.inject(counter) do |counter, line|
+    scene["SPEECH"].inject(counter) do |counter, line|
       speaker = line["SPEAKER"].capitalize
       counter[speaker] += 1
       counter

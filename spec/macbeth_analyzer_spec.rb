@@ -3,14 +3,15 @@ require 'macbeth_analyzer'
 RSpec.describe MacbethAnalyzer do
 
   before do
-    @scene = [{"SPEAKER"=>"MACBETH", "LINE"=>["the first line"]},
-              {"SPEAKER"=>"MACDUFF", "LINE"=>["the second line"]},
-              {"SPEAKER"=>"MACBETH", "LINE"=>["the third line"]},
-              {"SPEAKER"=>"MACDUFF", "LINE"=>["the fourth line"]}]
+    @scene = { "SPEECH"=>[ {"SPEAKER"=>"MACBETH", "LINE"=>["the first line"] },
+                           {"SPEAKER"=>"MACDUFF", "LINE"=>["the second line"]},
+                           {"SPEAKER"=>"MACBETH", "LINE"=>["the third line"] },
+                           {"SPEAKER"=>"MACDUFF", "LINE"=>["the fourth line"]} ] }
 
     @act = [{"SCENE"=>@scene},
             {"SCENE"=>@scene}]
 
+    @play = {"ACT"=>[@act, @act]}
   end
 
   describe "#count_lines_in_scene" do
@@ -27,7 +28,7 @@ RSpec.describe MacbethAnalyzer do
 
   describe "#count_lines_in_act" do
     context "given an act with multiple scenes" do
-      it "counts the numbers of lines per speaker" do
+      it "counts the number of lines per speaker" do
         analyzer = MacbethAnalyzer.new
         lines_by_speaker = analyzer.count_lines_in_act(@act)
 
@@ -36,4 +37,16 @@ RSpec.describe MacbethAnalyzer do
       end
     end
   end
+
+  describe "#count_lines_in_play" do
+    context "given a play with multiple acts" do
+      it "counts the number of lines per speaker" do
+        analyzer = MacbethAnalyzer.new
+        lines_by_speaker = analyzer.count_lines_in_play(@play)
+
+        expect(lines_by_speaker).to eq({ "Macbeth" => 8,
+                                         "Macduff" => 8 })
+      end
+    end
+  end 
 end
