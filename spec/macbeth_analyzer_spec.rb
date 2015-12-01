@@ -3,13 +3,16 @@ require 'macbeth_analyzer'
 RSpec.describe MacbethAnalyzer do
 
   before do
+    @two_speakers_per_line_scene = { "SPEECH" =>
+                                    [ {"SPEAKER" => ["MACBETH", "MACDUFF"],
+                                       "LINE"    => ["the first line"]} ] }
+
     @scene = { "SPEECH"=>[ {"SPEAKER"=>"MACBETH", "LINE"=>["the first line"] },
                            {"SPEAKER"=>"MACDUFF", "LINE"=>["the second line"]},
                            {"SPEAKER"=>"MACBETH", "LINE"=>["the third line"] },
                            {"SPEAKER"=>"MACDUFF", "LINE"=>["the fourth line"]} ] }
 
-    @act = [{"SCENE"=>@scene},
-            {"SCENE"=>@scene}]
+    @act = {"SCENE"=>[@scene, @scene]}
 
     @play = {"ACT"=>[@act, @act]}
   end
@@ -22,6 +25,16 @@ RSpec.describe MacbethAnalyzer do
 
         expect(lines_by_speaker).to eq({ "Macbeth" => 2,
                                          "Macduff" => 2 })
+      end
+    end
+
+    context "given a scene with two speakers saying the same line" do
+      it "attributes the line to both speakers" do
+        analyzer = MacbethAnalyzer.new
+        lines_by_speaker = analyzer.count_lines_in_scene(@two_speakers_per_line_scene)
+
+        expect(lines_by_speaker).to eq({ "Macbeth" => 1,
+                                         "Macduff" => 1 })
       end
     end
   end
