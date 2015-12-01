@@ -6,12 +6,6 @@ class MacbethAnalyzer
 
   attr_reader :macbeth_hash
 
-  def initialize
-    if __FILE__ == $0
-      puts "HELLO!!!!!!!!!"
-    end
-  end
-
   def count_lines_in_play(play)
     play["ACT"].inject(Hash.new(0)) do |counter, act|
       count_lines_in_act(act, counter)
